@@ -1,28 +1,29 @@
 package com.microservice.auth.application.services;
 
-
-import com.microservice.auth.application.mapper.RoleEntityDto;
-import com.microservice.auth.infrastructure.adapter.entity.PersonEntity;
-import com.microservice.auth.infrastructure.adapter.entity.RoleEntity;
-import com.microservice.auth.infrastructure.adapter.jwt.JwtUtils;
-import com.microservice.auth.infrastructure.adapter.payload.JwtResponse;
-import com.microservice.auth.infrastructure.payload.LoginRequest;
-import com.microservice.auth.infrastructure.payload.LoginResponse;
-import com.microservice.auth.infrastructure.payload.RegisterRequest;
-import com.microservice.auth.infrastructure.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.microservice.auth.infrastructure.adapter.entity.ERole;
+import com.microservice.auth.infrastructure.adapter.entity.PersonEntity;
+import com.microservice.auth.infrastructure.adapter.entity.RoleEntity;
+import com.microservice.auth.infrastructure.adapter.jwt.JwtUtils;
+import com.microservice.auth.infrastructure.adapter.payload.AuthResponse;
+import com.microservice.auth.infrastructure.adapter.payload.JwtResponse;
+import com.microservice.auth.infrastructure.adapter.payload.LoginRequest;
+import com.microservice.auth.infrastructure.adapter.payload.RegisterRequest;
+import com.microservice.auth.infrastructure.repository.PersonRepository;
 
 
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,32 +65,39 @@ public class AuthService {
     }
 
 
-    public Boolean register(@NotNull RegisterRequest request) {
+    public AuthResponse register(@NotNull RegisterRequest request) {
 
-        // Set<RoleEntity> roles = request.getRoles().stream()
-        //         .map(role -> RoleEntity.builder()
-        //                 .nameRole(ERole.valueOf(role))
-        //                 .build())
-        //         .collect(Collectors.toSet());
+        Set<String> strRoles = request.getRoles();
+        Set<RoleEntity> roles = request.getRoles().stream()
+                .map(role -> RoleEntity.builder()
+                        .nameRole(ERole.valueOf(role))
+                        .build())
+                .collect(Collectors.toSet());
+        String pass = passwordEncoder.encode(request.getPassword());
 
-        // PersonEntity user = PersonEntity.builder()
-        //         .name(request.getName())
-        //         .userName(request.getUserName())
-        //         .lastName(request.getLastName())
-        //         .password(passwordEncoder.encode( request.getPassword()))
-        //         .roles(roles)
-        //         .build();
+        PersonEntity user = PersonEntity.builder()
+                .name(request.getName())
+                .userName(request.getUserName())
+                .lastName(request.getLastName())
+                .password(passwordEncoder.encode( request.getPassword()))
+                .roles(roles)
+                .build();
 
 
-        // userRepository.save(user);
+        userRepository.save(user);
 
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
-//        return AuthResponse.builder()
-//                .token(jwtUtils.generateJwtToken(authentication))
-//                .build();
-        return true;
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
+        return AuthResponse.builder()
+                .token(jwtUtils.generateJwtToken(authentication))
+                .build();
     }
-
-
+    public boolean validate(@NotNull JwtResponse  token)
+    {
+        return jwtUtils.validateJwtToken(token.getToken());
+    }
+     public boolean validateGetToken(@NotNull JwtResponse  token)
+    {
+        return jwtUtils.validateJwtToken(token.getToken());
+    }
 }

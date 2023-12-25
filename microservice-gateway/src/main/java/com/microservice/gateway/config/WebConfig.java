@@ -6,6 +6,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @RestController
@@ -22,5 +23,9 @@ public class WebConfig {
 
 		return http.build();
 	}
+	@Bean
+    public RestTemplate template(){
+       return new RestTemplate();
+    }
 
 }

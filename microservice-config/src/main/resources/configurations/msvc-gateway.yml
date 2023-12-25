@@ -20,7 +20,7 @@ spring:
           predicates:
             - Path=/api/student/**
           filters:
-            - CustomAuthorizationFilter=
+            - CustomAuthorizationFilter
         - id: courses
           uri: http://localhost:9090
           predicates:
@@ -34,6 +34,8 @@ spring:
           uri: http://localhost:8074
           predicates:
             - Path=/api/result/**
+          filters:
+            - CustomAuthorizationFilter
         - id: candidate
           uri: http://localhost:8034
           predicates:

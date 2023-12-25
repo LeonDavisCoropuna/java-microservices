@@ -1,47 +1,59 @@
 package com.microservice.gateway.filter;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.client.RestTemplate;
+
+import com.microservice.gateway.util.JwtUtil;
+import com.microservice.gateway.validator.RouteValidator;
 
 
 @Component
-public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Object> {
+public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<CustomAuthorizationFilter.Config> {
+
+    @Autowired
+    private RouteValidator validator;
+
+    @Autowired
+    private RestTemplate template;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    public CustomAuthorizationFilter() {
+        super(Config.class);
+    }
 
     @Override
-    public GatewayFilter apply(Object config) {
-        return (exchange, chain) -> {
-            // Aquí realizas la lógica de validación del token
-            // Puedes acceder a la solicitud actual con exchange.getRequest()
+    public GatewayFilter apply(Config config) {
+        return ((exchange, chain) -> {
+            if (validator.isSecured.test(exchange.getRequest())) {
+                //header contains token or not
+                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                    throw new RuntimeException("missing authorization header");
+                }
 
-            // Ejemplo: Validación de token JWT
-            if (isValidToken(exchange)) {
-                return chain.filter(exchange);
-            } else {
-                // Si la validación falla, puedes devolver una respuesta de error o redirigir a otra ubicación
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange.getResponse().setComplete();
+                String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    authHeader = authHeader.substring(7);
+                }
+                try {
+//                    //REST call to AUTH service
+                   template.getForObject("http://localhost:8100/api/auth/validate?token=" + authHeader, String.class);
+                    //jwtUtil.validateToken(authHeader);
+
+                } catch (Exception e) {
+                    System.out.println("invalid access...!");
+                    throw new RuntimeException("un authorized access to application");
+                }
             }
-        };
+            return chain.filter(exchange);
+        });
     }
 
-    private boolean isValidToken(ServerWebExchange exchange) {
-        // Implementa la lógica de validación de token aquí
-        // Puedes acceder a la solicitud actual con exchange.getRequest()
+    public static class Config {
 
-        // Ejemplo: Verificar la presencia y validez del token en el encabezado de autorización
-        String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        return isValidJwtToken(authorizationHeader);
-    }
-
-    private boolean isValidJwtToken(String token) {
-        // Implementa la lógica de validación de token JWT aquí
-        // Puedes utilizar bibliotecas como jjwt para validar tokens JWT
-
-        // Este es solo un ejemplo. Debes adaptarlo a tus necesidades específicas.
-        return StringUtils.hasText(token) && token.startsWith("Bearer ");
     }
 }
