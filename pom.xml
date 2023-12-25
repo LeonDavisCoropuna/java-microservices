@@ -17,12 +17,14 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>auth</module>
     <module>microservice-gateway</module>
     <module>microservice-eureka</module>
     <module>microservice-config</module>
     <module>microservice-student</module>
-    <module>microservice-course</module>
+    <module>microservice-result</module>
+    <module>microservice-candidate</module>
+    <module>microservice-elector</module>
+    <module>microservice-auth</module>
   </modules>
 
   <properties>

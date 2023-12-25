@@ -1,4 +1,4 @@
-package org.system.onlineelection.application.mapper;
+package com.microservice.result.application.mapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

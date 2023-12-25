@@ -1,4 +1,4 @@
-package org.system.onlineelection.domain.model;
+package com.microservice.result.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

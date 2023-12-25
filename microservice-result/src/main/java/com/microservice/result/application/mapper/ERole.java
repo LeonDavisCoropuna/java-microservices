@@ -1,4 +1,4 @@
-package org.system.onlineelection.infrastructure.adapter.entity;
+package com.microservice.result.application.mapper;
 
 
 public enum ERole {

@@ -1,8 +1,9 @@
-package org.system.onlineelection.infrastructure.repository;
+package com.microservice.result.infrastructure.repository;
 
+import com.microservice.result.infrastructure.entity.PoliticalPartyEntityDto;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.system.onlineelection.infrastructure.adapter.entity.PoliticalPartyEntityDto;
+
 
 
 @Repository

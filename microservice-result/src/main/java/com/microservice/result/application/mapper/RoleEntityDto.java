@@ -1,10 +1,10 @@
-package org.system.onlineelection.application.mapper;
+package com.microservice.result.application.mapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.system.onlineelection.infrastructure.adapter.entity.ERole;
+
 
 @Data
 @AllArgsConstructor

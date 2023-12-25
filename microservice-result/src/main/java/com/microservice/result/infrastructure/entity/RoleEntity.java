@@ -1,11 +1,11 @@
-package org.system.onlineelection.infrastructure.adapter.entity;
+package com.microservice.result.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.system.onlineelection.application.mapper.RoleEntityDto;
+import com.microservice.result.application.mapper.RoleEntityDto;
 
 @Data
 @AllArgsConstructor
@@ -22,11 +22,5 @@ public class RoleEntity {
     @Enumerated(EnumType.STRING)
     private ERole nameRole;
 
-    // Método de conversión a ERoleDto
-    public RoleEntityDto toDto( ) {
-        return RoleEntityDto.builder()
-                .id(id)
-                .nameRole(nameRole)
-                .build();
-    }
+
 }

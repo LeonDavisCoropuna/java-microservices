@@ -1,7 +1,7 @@
-package org.system.onlineelection.domain.port.output;
+package com.microservice.result.domain.port.output;
 
 
-import org.system.onlineelection.application.mapper.ResultDto;
+import com.microservice.result.application.mapper.ResultDto;
 
 import java.util.ArrayList;
 

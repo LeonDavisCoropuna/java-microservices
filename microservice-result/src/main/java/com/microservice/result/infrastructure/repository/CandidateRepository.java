@@ -1,8 +1,9 @@
-package org.system.onlineelection.infrastructure.repository;
+package com.microservice.result.infrastructure.repository;
 
+import com.microservice.result.infrastructure.entity.CandidateEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.system.onlineelection.infrastructure.adapter.entity.CandidateEntity;
+
 
 import java.util.Optional;
 

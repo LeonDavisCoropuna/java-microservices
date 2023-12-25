@@ -1,6 +1,6 @@
 eureka:
   client:
-    register-with-eureka: false
+    register-with-eureka: true
 
 server:
   port: 8080
@@ -23,3 +23,15 @@ spring:
           uri: http://localhost:9090
           predicates:
             - Path=/api/course/**
+        - id: results
+          uri: http://localhost:8074
+          predicates:
+            - Path=/api/result/**
+        - id: candidate
+          uri: http://localhost:8034
+          predicates:
+            - Path=/api/candidate/**
+        - id: elector
+          uri: http://localhost:8024
+          predicates:
+            - Path=/api/elector/**
