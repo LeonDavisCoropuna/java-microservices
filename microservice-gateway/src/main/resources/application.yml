@@ -3,3 +3,13 @@ spring:
     name: msvc-gateway
   config:
     import: optional:configserver:http://localhost:8888
+  main:
+    allow-bean-definition-overriding: true
+  logging:
+    level:
+      org.springframework.cloud.gateway: TRACE
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

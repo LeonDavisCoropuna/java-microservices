@@ -23,3 +23,7 @@ spring:
           uri: http://localhost:9090
           predicates:
             - Path=/api/course/**
+        - id: auth
+          uri: http://localhost:8100
+          predicates:
+            - Path=/api/auth/**
