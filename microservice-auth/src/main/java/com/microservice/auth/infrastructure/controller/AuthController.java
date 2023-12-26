@@ -6,6 +6,7 @@ import com.microservice.auth.infrastructure.adapter.payload.AuthResponse;
 import com.microservice.auth.infrastructure.adapter.payload.JwtResponse;
 import com.microservice.auth.infrastructure.adapter.payload.LoginRequest;
 import com.microservice.auth.infrastructure.adapter.payload.RegisterRequest;
+import com.microservice.auth.infrastructure.adapter.payload.RoleResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,10 +39,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.validate(request));
     }
     @GetMapping("/validate")
-    public ResponseEntity<?> validateToken(@RequestParam("token") JwtResponse token) {
+    public ResponseEntity<RoleResponse> validateToken(@RequestParam("token") JwtResponse token) {
         if(authService.validate(token)){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok(authService.validateGetToken(token));
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
     }
 }

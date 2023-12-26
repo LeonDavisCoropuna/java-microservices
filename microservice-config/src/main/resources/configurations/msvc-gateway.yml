@@ -1,10 +1,3 @@
-eureka:
-  client:
-    register-with-eureka: false
-
-server:
-  port: 8080
-
 spring:
   application:
     name: msvc-gateway
@@ -15,16 +8,6 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: students
-          uri: http://localhost:8090
-          predicates:
-            - Path=/api/student/**
-          filters:
-            - CustomAuthorizationFilter
-        - id: courses
-          uri: http://localhost:9090
-          predicates:
-            - Path=/api/course/**
         - id: auth
           uri: http://localhost:8100
           predicates:
@@ -35,12 +18,20 @@ spring:
           predicates:
             - Path=/api/result/**
           filters:
-            - CustomAuthorizationFilter
+            - name: CustomAuthorizationFilter
+              args:
+                roles: ["ROLE_ADMIN"]
         - id: candidate
           uri: http://localhost:8034
           predicates:
             - Path=/api/candidate/**
+          filters:
+            - name: CustomAuthorizationFilter
         - id: elector
           uri: http://localhost:8024
           predicates:
             - Path=/api/elector/**
+          filters:
+            - name: CustomAuthorizationFilter
+              args:
+                roles: ["ROLE_USER"]

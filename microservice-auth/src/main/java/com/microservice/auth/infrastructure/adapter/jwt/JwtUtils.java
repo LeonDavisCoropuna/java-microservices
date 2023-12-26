@@ -14,6 +14,7 @@ import com.microservice.auth.application.services.UserDetailsImpl;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -47,6 +48,12 @@ public class JwtUtils {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
+
+    public List<String> getUserRolesFromJwtToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody();
+        return (List<String>) claims.get("roles");
+    }
+
 
     public boolean validateJwtToken(String authToken) {
         try {

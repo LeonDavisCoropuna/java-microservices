@@ -1,5 +1,7 @@
 package com.microservice.gateway.filter;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -8,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.microservice.gateway.util.JwtUtil;
+import com.microservice.gateway.payload.RolesDto;
 import com.microservice.gateway.validator.RouteValidator;
 
 
@@ -20,8 +22,6 @@ public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Cust
 
     @Autowired
     private RestTemplate template;
-    @Autowired
-    private JwtUtil jwtUtil;
 
     public CustomAuthorizationFilter() {
         super(Config.class);
@@ -29,9 +29,8 @@ public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Cust
 
     @Override
     public GatewayFilter apply(Config config) {
-        return ((exchange, chain) -> {
+        return (exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
-                //header contains token or not
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                     return exchange.getResponse().setComplete();
@@ -42,9 +41,12 @@ public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Cust
                     authHeader = authHeader.substring(7);
                 }
                 try {
-//                    //REST call to AUTH service
-                    template.getForObject("http://localhost:8100/api/auth/validate?token=" + authHeader, String.class);
-                    //jwtUtil.validateToken(authHeader);
+                    RolesDto rolesUser = template.getForObject("http://localhost:8100/api/auth/validate?token=" + authHeader, RolesDto.class);
+
+                    if (!isValidRoles(config, rolesUser)) {
+                        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                        return exchange.getResponse().setComplete();
+                    }
 
                 } catch (Exception e) {
                     System.out.println("invalid access...!");
@@ -52,11 +54,25 @@ public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Cust
                     return exchange.getResponse().setComplete();
                 }
             }
+
             return chain.filter(exchange);
-        });
+        };
+    }
+
+    private boolean isValidRoles(Config condif, RolesDto rolesUser) {
+        List<String> roles = condif.getRoles();
+        return rolesUser != null && rolesUser.getRoles().stream().anyMatch(roles::contains);
     }
 
     public static class Config {
+        private List<String> roles;
 
+        public List<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(List<String> roles) {
+            this.roles = roles;
+        }
     }
 }

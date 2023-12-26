@@ -17,6 +17,7 @@ import com.microservice.auth.infrastructure.adapter.payload.AuthResponse;
 import com.microservice.auth.infrastructure.adapter.payload.JwtResponse;
 import com.microservice.auth.infrastructure.adapter.payload.LoginRequest;
 import com.microservice.auth.infrastructure.adapter.payload.RegisterRequest;
+import com.microservice.auth.infrastructure.adapter.payload.RoleResponse;
 import com.microservice.auth.infrastructure.repository.PersonRepository;
 
 
@@ -96,8 +97,11 @@ public class AuthService {
     {
         return jwtUtils.validateJwtToken(token.getToken());
     }
-     public boolean validateGetToken(@NotNull JwtResponse  token)
+     public RoleResponse validateGetToken(@NotNull JwtResponse token)
     {
-        return jwtUtils.validateJwtToken(token.getToken());
+        if(jwtUtils.validateJwtToken(token.getToken())){
+           return RoleResponse.builder().roles(jwtUtils.getUserRolesFromJwtToken(token.getToken())).build();
+        }
+        return null;
     }
 }
