@@ -35,3 +35,11 @@ spring:
               args:
                 roles: ["ROLE_USER"]
 
+        - id: parties
+          uri: http://localhost:8200
+          predicates:
+            - Path=/api/parties/**
+          filters:
+            - name: CustomAuthorizationFilter
+              args:
+                roles: [ "ROLE_ADMIN" ]
