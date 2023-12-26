@@ -20,7 +20,6 @@
     <module>microservice-gateway</module>
     <module>microservice-eureka</module>
     <module>microservice-config</module>
-    <module>microservice-student</module>
     <module>microservice-result</module>
     <module>microservice-candidate</module>
     <module>microservice-elector</module>
