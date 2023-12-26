@@ -1,0 +1,16 @@
+server:
+  port: 8200
+
+spring:
+  application:
+    name: msvc-parties
+  data:
+    mongodb:
+      uri: mongodb+srv://systemR2:8DRKGWP16bRvNRzM@cluster0.gta3o43.mongodb.net/onlineelection
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
