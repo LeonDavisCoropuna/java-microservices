@@ -29,6 +29,7 @@ public class CustomAuthorizationFilter extends AbstractGatewayFilterFactory<Cust
 
     @Override
     public GatewayFilter apply(Config config) {
+
         return (exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
