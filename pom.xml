@@ -25,6 +25,7 @@
     <module>microservice-candidate</module>
     <module>microservice-elector</module>
     <module>microservice-auth</module>
+    <module>microservice-parties</module>
   </modules>
 
   <properties>
